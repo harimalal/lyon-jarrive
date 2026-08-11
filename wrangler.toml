@@ -1,0 +1,13 @@
+name = "lyon-jarrive"
+compatibility_date = "2025-08-11"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lyon-jarrive-db"
+database_id = ""
+
+[env.production]
+d1_databases = [
+  { binding = "DB", database_name = "lyon-jarrive-db", database_id = "" }
+]
