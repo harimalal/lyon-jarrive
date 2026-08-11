@@ -25,7 +25,7 @@ export async function onRequest(context) {
 
     if (request.method === 'PUT') {
       const body = await request.json();
-      const { name, cost, comment, completed, category_id } = body;
+      const { name, cost, comment, completed, category_id, priority } = body;
       const updates = [];
       const params_arr = [];
       if (name !== undefined) { updates.push('name = ?'); params_arr.push(name); }
@@ -33,6 +33,7 @@ export async function onRequest(context) {
       if (comment !== undefined) { updates.push('comment = ?'); params_arr.push(comment); }
       if (completed !== undefined) { updates.push('completed = ?'); params_arr.push(completed ? 1 : 0); }
       if (category_id !== undefined) { updates.push('category_id = ?'); params_arr.push(category_id); }
+      if (priority !== undefined) { updates.push('priority = ?'); params_arr.push(priority); }
       if (updates.length === 0) {
         return new Response(JSON.stringify({ error: 'No fields to update' }), { status: 400, headers });
       }

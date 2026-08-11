@@ -13,8 +13,10 @@ CREATE TABLE IF NOT EXISTS items (
   cost REAL NOT NULL DEFAULT 0,
   comment TEXT DEFAULT '',
   completed INTEGER NOT NULL DEFAULT 0,
+  priority TEXT NOT NULL DEFAULT 'P1',
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_items_category ON items(category_id);
+CREATE INDEX idx_items_priority ON items(priority);

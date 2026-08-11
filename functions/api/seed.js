@@ -36,8 +36,8 @@ export async function onRequest(context) {
 
       for (const item of (cat.items || [])) {
         await env.DB.prepare(
-          'INSERT INTO items (id, category_id, name, cost, comment, completed) VALUES (?, ?, ?, ?, ?, ?)'
-        ).bind(item.id, categoryId, item.name, item.cost, item.comment || '', item.completed ? 1 : 0).run();
+          'INSERT INTO items (id, category_id, name, cost, comment, completed, priority) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        ).bind(item.id, categoryId, item.name, item.cost, item.comment || '', item.completed ? 1 : 0, item.priority || 'P1').run();
       }
     }
 

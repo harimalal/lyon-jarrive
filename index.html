@@ -24,6 +24,10 @@
             --ballet-border: #E8D5D0;
             --ballet-success: #7B9B6A;
             --ballet-danger: #C4727A;
+            --p1-color: #8B3A4A;
+            --p1-bg: rgba(139,58,74,0.08);
+            --p2-color: #C9A96E;
+            --p2-bg: rgba(201,169,110,0.08);
         }
 
         html, body { height: 100%; overflow: hidden; }
@@ -50,10 +54,8 @@
         header::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
             background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.15) 0%, transparent 60%);
             pointer-events: none;
         }
@@ -137,7 +139,7 @@
             border-radius: 0.8rem;
             border: 1px solid var(--ballet-border);
             padding: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.8rem;
         }
         .global-progress-header {
             display: flex;
@@ -159,8 +161,7 @@
             color: var(--ballet-burgundy);
         }
         .global-progress-bar {
-            width: 100%;
-            height: 6px;
+            width: 100%; height: 6px;
             background: #F0E8E4;
             border-radius: 3px;
             overflow: hidden;
@@ -192,6 +193,48 @@
         .global-dot.items { background: var(--ballet-rose); }
         .global-dot.budget { background: var(--ballet-burgundy); }
 
+        /* ── FILTERS ── */
+        .filters {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.35rem 0.7rem;
+            border: 1px solid var(--ballet-border);
+            border-radius: 1rem;
+            background: var(--ballet-white);
+            font-size: 0.65rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            color: var(--ballet-taupe);
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .filter-btn.active {
+            background: var(--ballet-burgundy);
+            color: white;
+            border-color: var(--ballet-burgundy);
+        }
+        .filter-btn.p1-filter.active {
+            background: var(--p1-color);
+            border-color: var(--p1-color);
+        }
+        .filter-btn.p2-filter.active {
+            background: var(--p2-color);
+            border-color: var(--p2-color);
+            color: white;
+        }
+        .filter-separator {
+            width: 1px;
+            background: var(--ballet-border);
+            margin: 0 0.2rem;
+            align-self: stretch;
+        }
+
         /* ── CATEGORIES ── */
         .categories-list {
             display: flex;
@@ -205,6 +248,7 @@
             border: 1px solid var(--ballet-border);
             transition: all 0.3s ease;
         }
+        .category-section.hidden { display: none; }
         .category-header {
             padding: 0.8rem 1rem;
             cursor: pointer;
@@ -334,9 +378,9 @@
             opacity: 0.5;
             background: #F8F4F0;
         }
+        .item.hidden { display: none; }
         .item-checkbox {
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             flex-shrink: 0;
             cursor: pointer;
             accent-color: var(--ballet-burgundy);
@@ -368,6 +412,23 @@
             color: var(--ballet-gold);
             white-space: nowrap;
             flex-shrink: 0;
+        }
+        .item-priority {
+            font-size: 0.55rem;
+            font-weight: 700;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.3rem;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .item-priority.p1 {
+            background: var(--p1-bg);
+            color: var(--p1-color);
+        }
+        .item-priority.p2 {
+            background: var(--p2-bg);
+            color: var(--p2-color);
         }
         .item-comment {
             font-size: 0.65rem;
@@ -591,6 +652,15 @@
             </div>
         </div>
 
+        <!-- FILTERS -->
+        <div class="filters" id="filters">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Tout</button>
+            <span class="filter-separator"></span>
+            <button class="filter-btn p1-filter" data-filter="P1" onclick="setFilter('P1')">P1 · Sept/Oct</button>
+            <button class="filter-btn p2-filter" data-filter="P2" onclick="setFilter('P2')">P2 · Nov/Déc</button>
+            <span class="filter-separator"></span>
+        </div>
+
         <div class="categories-list" id="categoriesContainer"></div>
     </div>
 
@@ -618,6 +688,13 @@
             <div class="form-group">
                 <label>Coût estimé (€)</label>
                 <input type="number" id="newItemCost" step="0.01" min="0" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Priorité</label>
+                <select id="newItemPriority">
+                    <option value="P1">P1 · Septembre/Octobre</option>
+                    <option value="P2">P2 · Novembre/Décembre</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Commentaire</label>
@@ -650,6 +727,13 @@
                 <input type="number" id="editItemCost" step="0.01" min="0">
             </div>
             <div class="form-group">
+                <label>Priorité</label>
+                <select id="editItemPriority">
+                    <option value="P1">P1 · Septembre/Octobre</option>
+                    <option value="P2">P2 · Novembre/Décembre</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label>Commentaire</label>
                 <textarea id="editItemComment"></textarea>
             </div>
@@ -668,6 +752,7 @@
         let expandedCategories = {};
         let editingItemId = null;
         let editingCategoryId = null;
+        let currentFilter = 'all';
 
         function showLoading() { document.getElementById('loadingOverlay').classList.remove('hidden'); }
         function hideLoading() { document.getElementById('loadingOverlay').classList.add('hidden'); }
@@ -701,6 +786,7 @@
                 alert('Erreur de connexion. Veuillez réessayer.');
             }
             hideLoading();
+            buildCategoryFilters();
             render();
         }
 
@@ -716,89 +802,113 @@
                         name: item.name,
                         cost: item.cost,
                         comment: item.comment || '',
-                        completed: item.completed === 1
+                        completed: item.completed === 1,
+                        priority: item.priority || 'P1'
                     }))
                 };
             });
             updateCategorySelect();
         }
 
+        function buildCategoryFilters() {
+            const filtersDiv = document.getElementById('filters');
+            // Remove old category buttons (keep first 5: Tout, sep, P1, P2, sep)
+            while (filtersDiv.children.length > 5) {
+                filtersDiv.removeChild(filtersDiv.lastChild);
+            }
+            Object.entries(appData).forEach(([catId, catData]) => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.dataset.filter = 'cat-' + catId;
+                btn.textContent = catData.name.split(' ')[0];
+                btn.onclick = () => setFilter('cat-' + catId);
+                filtersDiv.appendChild(btn);
+            });
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.filter-btn[data-filter="${filter}"]`)?.classList.add('active');
+            render();
+        }
+
         async function seedInitialData() {
             const initialData = [
                 { name: "🛏️ Literie", budget: 120, items: [
-                    { id: genId(), name: "Oreiller (60×60)", cost: 8, comment: "" },
-                    { id: genId(), name: "Taies d'oreiller (×2)", cost: 5, comment: "" },
-                    { id: genId(), name: "Couette 140×200 ou 200×200", cost: 25, comment: "Vérifier taille du lit" },
-                    { id: genId(), name: "Housse de couette", cost: 12, comment: "" },
-                    { id: genId(), name: "Drap-housse", cost: 7, comment: "" },
-                    { id: genId(), name: "Protège-matelas", cost: 9, comment: "" },
-                    { id: genId(), name: "Plaid / jeté de lit", cost: 10, comment: "" },
-                    { id: genId(), name: "Coussins déco (×1)", cost: 6, comment: "" }
+                    { id: genId(), name: "Oreiller (60×60)", cost: 8, comment: "", priority: "P1" },
+                    { id: genId(), name: "Taies d'oreiller (×2)", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Couette 140×200 ou 200×200", cost: 25, comment: "Vérifier taille du lit", priority: "P1" },
+                    { id: genId(), name: "Housse de couette", cost: 12, comment: "", priority: "P1" },
+                    { id: genId(), name: "Drap-housse", cost: 7, comment: "", priority: "P1" },
+                    { id: genId(), name: "Protège-matelas", cost: 9, comment: "", priority: "P1" },
+                    { id: genId(), name: "Plaid / jeté de lit", cost: 10, comment: "", priority: "P1" },
+                    { id: genId(), name: "Coussins déco (×1)", cost: 6, comment: "", priority: "P2" }
                 ]},
                 { name: "🚿 Toilette & hygiène", budget: 80, items: [
-                    { id: genId(), name: "Serviettes de bain (×2)", cost: 16, comment: "" },
-                    { id: genId(), name: "Petites serviettes (×2)", cost: 6, comment: "" },
-                    { id: genId(), name: "Gant de toilette", cost: 2, comment: "" },
-                    { id: genId(), name: "Peignoir / sortie de bain", cost: 18, comment: "Si salle de bains sur le palier" },
-                    { id: genId(), name: "Trousse suspendue", cost: 7, comment: "" },
-                    { id: genId(), name: "Miroir de table", cost: 4, comment: "" },
-                    { id: genId(), name: "Panier transport", cost: 5, comment: "" },
-                    { id: genId(), name: "Produits toilette", cost: 12, comment: "" }
+                    { id: genId(), name: "Serviettes de bain (×2)", cost: 16, comment: "", priority: "P1" },
+                    { id: genId(), name: "Petites serviettes (×2)", cost: 6, comment: "", priority: "P1" },
+                    { id: genId(), name: "Gant de toilette", cost: 2, comment: "", priority: "P1" },
+                    { id: genId(), name: "Peignoir / sortie de bain", cost: 18, comment: "Si salle de bains sur le palier", priority: "P1" },
+                    { id: genId(), name: "Trousse suspendue", cost: 7, comment: "", priority: "P1" },
+                    { id: genId(), name: "Miroir de table", cost: 4, comment: "", priority: "P2" },
+                    { id: genId(), name: "Panier transport", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Produits toilette", cost: 12, comment: "", priority: "P1" }
                 ]},
                 { name: "🖥️ Bureau & fournitures", budget: 100, items: [
-                    { id: genId(), name: "Lampe de bureau LED", cost: 15, comment: "" },
-                    { id: genId(), name: "Multiprise USB", cost: 12, comment: "" },
-                    { id: genId(), name: "Rallonge électrique", cost: 5, comment: "" },
-                    { id: genId(), name: "Organiseur bureau", cost: 3, comment: "" },
-                    { id: genId(), name: "Bloc-notes, stylos, post-it", cost: 7, comment: "" },
-                    { id: genId(), name: "Agenda / planner", cost: 5, comment: "" },
-                    { id: genId(), name: "Calculatrice", cost: 10, comment: "" },
-                    { id: genId(), name: "Ciseaux, colle, scotch", cost: 4, comment: "" },
-                    { id: genId(), name: "Casque / écouteurs", cost: 15, comment: "Pour respecter la colocation" },
-                    { id: genId(), name: "Ventilateur USB", cost: 12, comment: "" }
+                    { id: genId(), name: "Lampe de bureau LED", cost: 15, comment: "", priority: "P1" },
+                    { id: genId(), name: "Multiprise USB", cost: 12, comment: "", priority: "P1" },
+                    { id: genId(), name: "Rallonge électrique", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Organiseur bureau", cost: 3, comment: "", priority: "P2" },
+                    { id: genId(), name: "Bloc-notes, stylos, post-it", cost: 7, comment: "", priority: "P1" },
+                    { id: genId(), name: "Agenda / planner", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Calculatrice", cost: 10, comment: "", priority: "P1" },
+                    { id: genId(), name: "Ciseaux, colle, scotch", cost: 4, comment: "", priority: "P1" },
+                    { id: genId(), name: "Casque / écouteurs", cost: 15, comment: "Pour respecter la colocation", priority: "P2" },
+                    { id: genId(), name: "Ventilateur USB", cost: 12, comment: "", priority: "P2" }
                 ]},
                 { name: "📦 Rangement & organisation", budget: 65, items: [
-                    { id: genId(), name: "Boîtes rangement (×3)", cost: 12, comment: "" },
-                    { id: genId(), name: "Cintres (×10)", cost: 5, comment: "" },
-                    { id: genId(), name: "Patère adhésive", cost: 3, comment: "Sans percer" },
-                    { id: genId(), name: "Sac à linge sale", cost: 6, comment: "" },
-                    { id: genId(), name: "Panier chargeurs", cost: 3, comment: "" }
+                    { id: genId(), name: "Boîtes rangement (×3)", cost: 12, comment: "", priority: "P2" },
+                    { id: genId(), name: "Cintres (×10)", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Patère adhésive", cost: 3, comment: "Sans percer", priority: "P2" },
+                    { id: genId(), name: "Sac à linge sale", cost: 6, comment: "", priority: "P1" },
+                    { id: genId(), name: "Panier chargeurs", cost: 3, comment: "", priority: "P2" }
                 ]},
                 { name: "🛋️ Confort & déco chambre", budget: 70, items: [
-                    { id: genId(), name: "Tapis 60×90", cost: 12, comment: "" },
-                    { id: genId(), name: "Rideau occultant", cost: 18, comment: "Si besoin, vérifier avec l'internat" },
-                    { id: genId(), name: "Guirlande LED déco", cost: 6, comment: "" },
-                    { id: genId(), name: "Photos / cadres / posters", cost: 8, comment: "" },
-                    { id: genId(), name: "Pâte adhésive", cost: 2, comment: "Pas de clous autorisés" },
-                    { id: genId(), name: "Mini plante", cost: 5, comment: "" }
+                    { id: genId(), name: "Tapis 60×90", cost: 12, comment: "", priority: "P2" },
+                    { id: genId(), name: "Rideau occultant", cost: 18, comment: "Si besoin, vérifier avec l'internat", priority: "P1" },
+                    { id: genId(), name: "Guirlande LED déco", cost: 6, comment: "", priority: "P2" },
+                    { id: genId(), name: "Photos / cadres / posters", cost: 8, comment: "", priority: "P2" },
+                    { id: genId(), name: "Pâte adhésive", cost: 2, comment: "Pas de clous autorisés", priority: "P2" },
+                    { id: genId(), name: "Mini plante", cost: 5, comment: "", priority: "P2" }
                 ]},
                 { name: "☕ Alimentation & électroménager", budget: 65, items: [
-                    { id: genId(), name: "Bouilloire électrique", cost: 18, comment: "Vérifier si autorisée" },
-                    { id: genId(), name: "Tasse, verre, assiette, bol", cost: 8, comment: "" },
-                    { id: genId(), name: "Couverts", cost: 3, comment: "" },
-                    { id: genId(), name: "Boîte hermétique", cost: 4, comment: "" },
-                    { id: genId(), name: "Gourde isotherme", cost: 12, comment: "" },
-                    { id: genId(), name: "Thé, café, en-cas", cost: 8, comment: "" }
+                    { id: genId(), name: "Bouilloire électrique", cost: 18, comment: "Vérifier si autorisée", priority: "P2" },
+                    { id: genId(), name: "Tasse, verre, assiette, bol", cost: 8, comment: "", priority: "P1" },
+                    { id: genId(), name: "Couverts", cost: 3, comment: "", priority: "P1" },
+                    { id: genId(), name: "Boîte hermétique", cost: 4, comment: "", priority: "P2" },
+                    { id: genId(), name: "Gourde isotherme", cost: 12, comment: "", priority: "P1" },
+                    { id: genId(), name: "Thé, café, en-cas", cost: 8, comment: "", priority: "P2" }
                 ]},
                 { name: "💊 Trousse de secours & pharmacie", budget: 35, items: [
-                    { id: genId(), name: "Kit premiers soins", cost: 8, comment: "" },
-                    { id: genId(), name: "Doliprane / ibuprofène", cost: 5, comment: "" },
-                    { id: genId(), name: "Thermomètre", cost: 4, comment: "" },
-                    { id: genId(), name: "Crème mains, baume lèvres", cost: 6, comment: "Lyon = froid et sec" },
-                    { id: genId(), name: "Mouchoirs (×lot)", cost: 3, comment: "" }
+                    { id: genId(), name: "Kit premiers soins", cost: 8, comment: "", priority: "P1" },
+                    { id: genId(), name: "Doliprane / ibuprofène", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Thermomètre", cost: 4, comment: "", priority: "P1" },
+                    { id: genId(), name: "Crème mains, baume lèvres", cost: 6, comment: "Lyon = froid et sec", priority: "P1" },
+                    { id: genId(), name: "Mouchoirs (×lot)", cost: 3, comment: "", priority: "P1" }
                 ]},
                 { name: "🧹 Entretien & ménage", budget: 30, items: [
-                    { id: genId(), name: "Kit ménage (éponge, liquide)", cost: 6, comment: "" },
-                    { id: genId(), name: "Sacs poubelle", cost: 2, comment: "" },
-                    { id: genId(), name: "Lessive dosettes", cost: 5, comment: "" },
-                    { id: genId(), name: "Petite pelle & balayette", cost: 5, comment: "" }
+                    { id: genId(), name: "Kit ménage (éponge, liquide)", cost: 6, comment: "", priority: "P1" },
+                    { id: genId(), name: "Sacs poubelle", cost: 2, comment: "", priority: "P1" },
+                    { id: genId(), name: "Lessive dosettes", cost: 5, comment: "", priority: "P1" },
+                    { id: genId(), name: "Petite pelle & balayette", cost: 5, comment: "", priority: "P1" }
                 ]},
                 { name: "🔐 Divers indispensables", budget: 40, items: [
-                    { id: genId(), name: "Cadenas casier", cost: 6, comment: "" },
-                    { id: genId(), name: "Kit couture voyage", cost: 3, comment: "" },
-                    { id: genId(), name: "Lampe de poche", cost: 5, comment: "" },
-                    { id: genId(), name: "Batterie externe", cost: 15, comment: "" },
-                    { id: genId(), name: "Enceinte Bluetooth", cost: 20, comment: "Optionnel" }
+                    { id: genId(), name: "Cadenas casier", cost: 6, comment: "", priority: "P1" },
+                    { id: genId(), name: "Kit couture voyage", cost: 3, comment: "", priority: "P2" },
+                    { id: genId(), name: "Lampe de poche", cost: 5, comment: "", priority: "P2" },
+                    { id: genId(), name: "Batterie externe", cost: 15, comment: "", priority: "P1" },
+                    { id: genId(), name: "Enceinte Bluetooth", cost: 20, comment: "Optionnel", priority: "P2" }
                 ]}
             ];
             await apiFetch('/seed', { method: 'POST', body: JSON.stringify({ categories: initialData }) });
@@ -849,6 +959,7 @@
             document.getElementById('editItemName').value = item.name;
             document.getElementById('editItemCategory').value = catId;
             document.getElementById('editItemCost').value = item.cost;
+            document.getElementById('editItemPriority').value = item.priority || 'P1';
             document.getElementById('editItemComment').value = item.comment || '';
             openModal('editModal');
         }
@@ -858,6 +969,7 @@
             const newName = document.getElementById('editItemName').value.trim();
             const newCatId = document.getElementById('editItemCategory').value;
             const newCost = parseFloat(document.getElementById('editItemCost').value) || 0;
+            const newPriority = document.getElementById('editItemPriority').value;
             const newComment = document.getElementById('editItemComment').value.trim();
 
             if (!newName) { alert("Le nom de l'article ne peut pas être vide"); return; }
@@ -865,7 +977,7 @@
             try {
                 await apiFetch('/items/' + editingItemId, {
                     method: 'PUT',
-                    body: JSON.stringify({ name: newName, cost: newCost, comment: newComment, category_id: parseInt(newCatId) })
+                    body: JSON.stringify({ name: newName, cost: newCost, comment: newComment, priority: newPriority, category_id: parseInt(newCatId) })
                 });
                 if (newCatId !== editingCategoryId) {
                     const movedItem = appData[editingCategoryId].items.find(i => i.id === editingItemId);
@@ -877,12 +989,14 @@
                         movedItem.name = newName;
                         movedItem.cost = newCost;
                         movedItem.comment = newComment;
+                        movedItem.priority = newPriority;
                         appData[newCatId].items.push(movedItem);
                     }
                 } else {
                     item.name = newName;
                     item.cost = newCost;
                     item.comment = newComment;
+                    item.priority = newPriority;
                 }
                 closeModal('editModal');
                 render();
@@ -906,6 +1020,7 @@
             const catId = document.getElementById('newItemCategory').value;
             const newCatName = document.getElementById('newItemNewCategory').value.trim();
             const cost = parseFloat(document.getElementById('newItemCost').value) || 0;
+            const priority = document.getElementById('newItemPriority').value;
             const comment = document.getElementById('newItemComment').value.trim();
 
             if (!name) { alert("Nom de l'article requis"); return; }
@@ -928,10 +1043,10 @@
                 const itemId = genId();
                 await apiFetch('/items', {
                     method: 'POST',
-                    body: JSON.stringify({ id: itemId, category_id: parseInt(targetCatId), name, cost, comment })
+                    body: JSON.stringify({ id: itemId, category_id: parseInt(targetCatId), name, cost, comment, priority })
                 });
 
-                appData[targetCatId].items.push({ id: itemId, name, cost, comment, completed: false });
+                appData[targetCatId].items.push({ id: itemId, name, cost, comment, completed: false, priority });
 
                 document.getElementById('newItemName').value = '';
                 document.getElementById('newItemCategory').value = '';
@@ -941,6 +1056,7 @@
 
                 closeModal('addModal');
                 updateCategorySelect();
+                buildCategoryFilters();
                 render();
             } catch (err) {
                 console.error('Add error:', err);
@@ -948,16 +1064,46 @@
             }
         }
 
+        function itemMatchesFilter(item, catId) {
+            if (currentFilter === 'all') return true;
+            if (currentFilter === 'P1' || currentFilter === 'P2') {
+                return item.priority === currentFilter;
+            }
+            if (currentFilter.startsWith('cat-')) {
+                return currentFilter === 'cat-' + catId;
+            }
+            return true;
+        }
+
+        function categoryHasVisibleItems(catId) {
+            if (currentFilter === 'all') return true;
+            const cat = appData[catId];
+            if (!cat) return false;
+            if (currentFilter === 'P1' || currentFilter === 'P2') {
+                return cat.items.some(i => i.priority === currentFilter);
+            }
+            if (currentFilter.startsWith('cat-')) {
+                return currentFilter === 'cat-' + catId;
+            }
+            return true;
+        }
+
         function render() {
             const container = document.getElementById('categoriesContainer');
             let html = '';
 
             Object.entries(appData).forEach(([catId, catData]) => {
-                const items = catData.items;
-                const completed = items.filter(i => i.completed).length;
-                const total = items.length;
-                const spent = items.filter(i => i.completed).reduce((s, i) => s + i.cost, 0);
-                const itemsCost = items.reduce((s, i) => s + i.cost, 0);
+                if (!categoryHasVisibleItems(catId)) {
+                    html += `<div class="category-section hidden"></div>`;
+                    return;
+                }
+
+                const allItems = catData.items;
+                const visibleItems = allItems.filter(i => itemMatchesFilter(i, catId));
+                const completed = visibleItems.filter(i => i.completed).length;
+                const total = visibleItems.length;
+                const spent = visibleItems.filter(i => i.completed).reduce((s, i) => s + i.cost, 0);
+                const itemsCost = visibleItems.reduce((s, i) => s + i.cost, 0);
                 const budget = catData.budget;
                 const isExpanded = expandedCategories[catId];
                 const percent = total ? Math.round((completed / total) * 100) : 0;
@@ -993,19 +1139,20 @@
                         </div>
                         <div class="items-container">
                             <div class="items-content">
-                                ${items.length === 0 ? `
+                                ${visibleItems.length === 0 ? `
                                     <div class="empty-state">
                                         <div class="empty-icon">—</div>
                                         <div>Aucun article</div>
                                     </div>
-                                ` : items.map(item => `
-                                    <div>
+                                ` : allItems.map(item => `
+                                    <div class="item-wrapper" style="${!itemMatchesFilter(item, catId) ? 'display:none' : ''}">
                                         <div class="item ${item.completed ? 'completed' : ''}">
                                             <input type="checkbox" class="item-checkbox"
                                                    ${item.completed ? 'checked' : ''}
                                                    onchange="toggleItem('${item.id}', '${catId}')">
                                             <div class="item-info">
                                                 <span class="item-name ${item.completed ? 'completed' : ''}">${item.name}</span>
+                                                <span class="item-priority ${item.priority.toLowerCase()}">${item.priority}</span>
                                                 <span class="item-cost">${item.cost.toFixed(2)}€</span>
                                             </div>
                                             <div class="item-actions">
@@ -1031,6 +1178,12 @@
             Object.values(appData).forEach(cat => {
                 totalBudget += cat.budget;
                 cat.items.forEach(item => {
+                    if (currentFilter !== 'all' && currentFilter !== 'P1' && currentFilter !== 'P2') {
+                        if (!itemMatchesFilter(item, null)) return;
+                    }
+                    if (currentFilter === 'P1' || currentFilter === 'P2') {
+                        if (item.priority !== currentFilter) return;
+                    }
                     totalTodo++;
                     if (item.completed) { totalDone++; totalSpent += item.cost; }
                 });
@@ -1040,9 +1193,7 @@
             document.getElementById('totalSpent').textContent = totalSpent.toFixed(0) + ' €';
             document.getElementById('totalBudget').textContent = totalBudget + ' €';
 
-            // Global progress
             const globalPct = totalTodo ? Math.round((totalDone / totalTodo) * 100) : 0;
-            const budgetPct = totalBudget ? Math.round((totalSpent / totalBudget) * 100) : 0;
             document.getElementById('globalPct').textContent = globalPct + '%';
             document.getElementById('globalFill').style.width = globalPct + '%';
             document.getElementById('globalItems').textContent = totalDone + '/' + totalTodo + ' articles';

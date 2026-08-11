@@ -34,13 +34,13 @@ export async function onRequest(context) {
 
     if (request.method === 'POST') {
       const body = await request.json();
-      const { id, category_id, name, cost, comment } = body;
+      const { id, category_id, name, cost, comment, priority } = body;
       if (!id || !category_id || !name) {
         return new Response(JSON.stringify({ error: 'id, category_id, and name are required' }), { status: 400, headers });
       }
       await env.DB.prepare(
-        'INSERT INTO items (id, category_id, name, cost, comment) VALUES (?, ?, ?, ?, ?)'
-      ).bind(id, category_id, name, cost || 0, comment || '').run();
+        'INSERT INTO items (id, category_id, name, cost, comment, priority) VALUES (?, ?, ?, ?, ?, ?)'
+      ).bind(id, category_id, name, cost || 0, comment || '', priority || 'P1').run();
       const item = await env.DB.prepare('SELECT * FROM items WHERE id = ?').bind(id).first();
       return new Response(JSON.stringify(item), { status: 201, headers });
     }
