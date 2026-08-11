@@ -5,9 +5,9 @@ pages_build_output_dir = "."
 [[d1_databases]]
 binding = "DB"
 database_name = "lyon-jarrive-db"
-database_id = ""
+database_id = "ab638b18-3ab4-4ca8-9ab0-7ec83394b56a"
 
 [env.production]
 d1_databases = [
-  { binding = "DB", database_name = "lyon-jarrive-db", database_id = "" }
+  { binding = "DB", database_name = "lyon-jarrive-db", database_id = "ab638b18-3ab4-4ca8-9ab0-7ec83394b56a" }
 ]
