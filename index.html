@@ -97,7 +97,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.6rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.8rem;
         }
         .stat-box {
             background: var(--ballet-white);
@@ -130,6 +130,67 @@
             font-weight: 600;
             color: var(--ballet-burgundy);
         }
+
+        /* ── GLOBAL PROGRESS ── */
+        .global-progress {
+            background: var(--ballet-white);
+            border-radius: 0.8rem;
+            border: 1px solid var(--ballet-border);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .global-progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 0.6rem;
+        }
+        .global-progress-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--ballet-charcoal);
+            letter-spacing: 0.3px;
+        }
+        .global-progress-pct {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--ballet-burgundy);
+        }
+        .global-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #F0E8E4;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.6rem;
+        }
+        .global-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ballet-rose), var(--ballet-gold), var(--ballet-burgundy));
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .global-progress-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: var(--ballet-taupe);
+            letter-spacing: 0.5px;
+        }
+        .global-progress-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .global-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .global-dot.items { background: var(--ballet-rose); }
+        .global-dot.budget { background: var(--ballet-burgundy); }
 
         /* ── CATEGORIES ── */
         .categories-list {
@@ -514,6 +575,22 @@
                 <div class="stat-value" id="totalBudget">0 €</div>
             </div>
         </div>
+
+        <!-- GLOBAL PROGRESS -->
+        <div class="global-progress">
+            <div class="global-progress-header">
+                <span class="global-progress-title">Progression globale</span>
+                <span class="global-progress-pct" id="globalPct">0%</span>
+            </div>
+            <div class="global-progress-bar">
+                <div class="global-progress-fill" id="globalFill" style="width: 0%"></div>
+            </div>
+            <div class="global-progress-details">
+                <span><span class="global-dot items"></span> <span id="globalItems">0/0 articles</span></span>
+                <span><span class="global-dot budget"></span> <span id="globalBudget">0€ / 0€</span></span>
+            </div>
+        </div>
+
         <div class="categories-list" id="categoriesContainer"></div>
     </div>
 
@@ -962,6 +1039,14 @@
             document.getElementById('countDone').textContent = totalDone;
             document.getElementById('totalSpent').textContent = totalSpent.toFixed(0) + ' €';
             document.getElementById('totalBudget').textContent = totalBudget + ' €';
+
+            // Global progress
+            const globalPct = totalTodo ? Math.round((totalDone / totalTodo) * 100) : 0;
+            const budgetPct = totalBudget ? Math.round((totalSpent / totalBudget) * 100) : 0;
+            document.getElementById('globalPct').textContent = globalPct + '%';
+            document.getElementById('globalFill').style.width = globalPct + '%';
+            document.getElementById('globalItems').textContent = totalDone + '/' + totalTodo + ' articles';
+            document.getElementById('globalBudget').textContent = totalSpent.toFixed(0) + '€ / ' + totalBudget + '€';
         }
 
         function openModal(id) { document.getElementById(id).classList.add('active'); }
