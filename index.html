@@ -3,136 +3,487 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>🏃 Lyon J'arrive</title>
+    <title>Lyon J'arrive — Gestion Emménagement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         :root {
-            --primary: #5B8DD9; --secondary: #F4A0D8; --accent: #FFB366;
-            --bg-light: #FFFFFF; --bg-card: #FFFFFF; --border: #F0E6E1;
-            --text-main: #2e241f; --text-muted: #8b6f62;
-            --danger: #c62828; --success: #2e7d32; --warning: #f57f17;
+            --ballet-pink: #F2D5D5;
+            --ballet-rose: #E8B4B8;
+            --ballet-nude: #F5E6E0;
+            --ballet-gold: #C9A96E;
+            --ballet-burgundy: #8B3A4A;
+            --ballet-cream: #FDF8F5;
+            --ballet-charcoal: #2D2A2A;
+            --ballet-taupe: #8B7D7B;
+            --ballet-white: #FFFFFF;
+            --ballet-shadow: rgba(139, 58, 74, 0.06);
+            --ballet-border: #E8D5D0;
+            --ballet-success: #7B9B6A;
+            --ballet-danger: #C4727A;
         }
+
         html, body { height: 100%; overflow: hidden; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #FFFFFF; color: var(--text-main); line-height: 1.5;
-            display: flex; flex-direction: column;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(180deg, #FDF8F5 0%, #F5EDE8 100%);
+            color: var(--ballet-charcoal);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
         }
-        .container { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1rem; padding-bottom: 2rem; }
+
+        /* ── HEADER ── */
         header {
-            background: linear-gradient(135deg, #5B8DD9 0%, #6B9FE8 100%);
-            color: white; padding: 1.5rem 1rem; text-align: center; flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(91, 141, 217, 0.15);
+            background: linear-gradient(135deg, #8B3A4A 0%, #6B2D3A 50%, #4A1F28 100%);
+            color: white;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
         }
-        h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.3rem; letter-spacing: -0.5px; }
-        .header-meta { font-size: 0.85rem; opacity: 0.9; font-weight: 500; }
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 50%, rgba(201,169,110,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--ballet-gold), transparent);
+        }
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
+        }
+        .header-subtitle {
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-top: 0.2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 1rem;
+            padding-bottom: 5rem;
+        }
+
+        /* ── DASHBOARD ── */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
         .stat-box {
-            background: var(--bg-card); padding: 1rem; border-radius: 1rem;
-            box-shadow: 0 2px 12px rgba(91, 141, 217, 0.08); border-top: 4px solid #F4A0D8;
-            position: relative; overflow: hidden;
+            background: var(--ballet-white);
+            padding: 0.9rem;
+            border-radius: 0.8rem;
+            border: 1px solid var(--ballet-border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .stat-box::before {
-            content: ''; position: absolute; top: 0; right: 0; width: 100px; height: 100px;
-            background: radial-gradient(circle, rgba(244, 160, 216, 0.08) 0%, transparent 70%);
-            border-radius: 50%; pointer-events: none;
+        .stat-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--ballet-rose), var(--ballet-gold));
+            opacity: 0.6;
         }
-        .stat-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; margin-bottom: 0.4rem; letter-spacing: 0.5px; }
-        .stat-value { font-size: 1.8rem; font-weight: 700; color: #5B8DD9; }
-        .categories-list { display: flex; flex-direction: column; gap: 1.2rem; }
+        .stat-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: var(--ballet-taupe);
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.3rem;
+        }
+        .stat-value {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--ballet-burgundy);
+        }
+
+        /* ── CATEGORIES ── */
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
         .category-section {
-            background: var(--bg-card); border-radius: 1rem; overflow: hidden;
-            box-shadow: 0 2px 12px rgba(91, 141, 217, 0.06); transition: all 0.3s ease;
-            border: 1px solid #F5E6E1;
+            background: var(--ballet-white);
+            border-radius: 0.8rem;
+            overflow: hidden;
+            border: 1px solid var(--ballet-border);
+            transition: all 0.3s ease;
         }
         .category-header {
-            padding: 1.2rem; cursor: pointer; display: flex; align-items: center; gap: 1rem;
-            background: #FAFAFA; border-bottom: 2px solid #F5E6E1; transition: all 0.2s; user-select: none;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: linear-gradient(180deg, #FDF8F5 0%, #FAF3F0 100%);
+            border-bottom: 1px solid var(--ballet-border);
+            user-select: none;
+            transition: background 0.2s;
         }
-        .category-header:active { background: #F5F5F5; }
+        .category-header:active { background: #F5EDE8; }
         .category-toggle {
-            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #5B8DD9 0%, #6B9FE8 100%); color: white;
-            border-radius: 50%; font-size: 1.2rem; flex-shrink: 0; transition: transform 0.3s ease;
+            width: 20px; height: 20px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--ballet-burgundy);
+            font-size: 0.7rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+            opacity: 0.6;
         }
         .category-section.collapsed .category-toggle { transform: rotate(-90deg); }
-        .category-title { flex: 1; font-weight: 600; font-size: 1rem; color: #5B8DD9; }
-        .category-stats-header { display: flex; gap: 1rem; align-items: center; font-size: 0.85rem; }
-        .stat-chip { background: rgba(91, 141, 217, 0.08); padding: 0.3rem 0.7rem; border-radius: 1rem; font-weight: 600; color: #5B8DD9; white-space: nowrap; }
-        .stat-chip.budget { background: rgba(255, 179, 102, 0.08); color: #FF9933; }
-        .stat-chip.success { background: rgba(244, 160, 216, 0.08); color: #F4A0D8; }
-        .progress-section { padding: 0 1.2rem 1rem; display: none; }
+        .category-title {
+            flex: 1;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--ballet-charcoal);
+            letter-spacing: 0.3px;
+        }
+        .category-stats-header {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            font-size: 0.7rem;
+        }
+        .stat-chip {
+            background: rgba(201,169,110,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 500;
+            color: var(--ballet-gold);
+            white-space: nowrap;
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+        }
+        .stat-chip.success {
+            background: rgba(123,155,106,0.08);
+            color: var(--ballet-success);
+        }
+
+        /* ── PROGRESS ── */
+        .progress-section {
+            padding: 0 1rem 0.8rem;
+            display: none;
+        }
         .category-section:not(.collapsed) .progress-section { display: block; }
-        .progress-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
-        .progress-bar-container { width: 100%; height: 8px; background: #E8E8E8; border-radius: 4px; overflow: hidden; margin-bottom: 0.8rem; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #F4A0D8 0%, #FFB366 100%); border-radius: 4px; transition: width 0.4s ease; }
-        .budget-bar-container { width: 100%; height: 6px; background: #E8E8E8; border-radius: 3px; overflow: hidden; position: relative; }
-        .budget-spent { height: 100%; background: linear-gradient(90deg, #5B8DD9 0%, #6B9FE8 100%); border-radius: 3px; transition: width 0.4s ease; }
-        .budget-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem; display: flex; justify-content: space-between; }
-        .items-container { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; border-top: 1px solid #F5E6E1; }
-        .category-section:not(.collapsed) .items-container { max-height: 3000px; }
-        .items-content { padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+        .progress-label {
+            font-size: 0.6rem;
+            color: var(--ballet-taupe);
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .progress-bar-container {
+            width: 100%; height: 4px;
+            background: #F0E8E4;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 0.6rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ballet-rose), var(--ballet-gold));
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+        .budget-bar-container {
+            width: 100%; height: 3px;
+            background: #F0E8E4;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .budget-spent {
+            height: 100%;
+            background: linear-gradient(90deg, var(--ballet-burgundy), #A04D5E);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+        .budget-label {
+            font-size: 0.6rem;
+            color: var(--ballet-taupe);
+            margin-top: 0.2rem;
+            display: flex;
+            justify-content: space-between;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── ITEMS ── */
+        .items-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .category-section:not(.collapsed) .items-container { max-height: 4000px; }
+        .items-content {
+            padding: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
         .item {
-            display: flex; gap: 0.8rem; align-items: flex-start; padding: 1rem;
-            background: #FAFAFA; border-radius: 0.6rem; border-left: 3px solid #5B8DD9; transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.6rem;
+            background: #FDF8F5;
+            border-radius: 0.5rem;
+            border: 1px solid transparent;
+            transition: all 0.2s;
         }
-        .item.completed { opacity: 0.6; background: #F5F5F5; border-left-color: #F4A0D8; }
-        .item-checkbox { width: 24px; height: 24px; flex-shrink: 0; cursor: pointer; accent-color: #F4A0D8; margin-top: 2px; }
-        .item-info { flex: 1; min-width: 0; }
-        .item-name { font-weight: 500; font-size: 0.95rem; margin-bottom: 0.2rem; word-break: break-word; }
-        .item-name.completed { text-decoration: line-through; color: var(--text-muted); }
-        .item-meta { display: flex; gap: 0.4rem; flex-wrap: wrap; font-size: 0.75rem; margin-bottom: 0.5rem; }
-        .item-tag { background: rgba(91, 141, 217, 0.1); padding: 0.2rem 0.5rem; border-radius: 0.3rem; color: #5B8DD9; font-weight: 500; }
-        .item-comment { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-bottom: 0.6rem; padding: 0.6rem; background: rgba(244, 160, 216, 0.05); border-left: 2px solid #F4A0D8; border-radius: 0.3rem; word-break: break-word; }
-        .item-actions { display: flex; gap: 0.4rem; margin-top: 0.6rem; }
-        .item-btn { padding: 0.4rem 0.6rem; border: none; background: none; cursor: pointer; font-size: 1rem; transition: all 0.2s; border-radius: 0.3rem; }
-        .item-btn-edit { color: #5B8DD9; }
-        .item-btn-delete { color: #F4A0D8; }
-        .empty-state { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: 0.9rem; }
-        .empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .item.completed {
+            opacity: 0.5;
+            background: #F8F4F0;
+        }
+        .item-checkbox {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            cursor: pointer;
+            accent-color: var(--ballet-burgundy);
+            margin: 0;
+        }
+        .item-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .item-name {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--ballet-charcoal);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        .item-name.completed {
+            text-decoration: line-through;
+            color: var(--ballet-taupe);
+        }
+        .item-cost {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--ballet-gold);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .item-comment {
+            font-size: 0.65rem;
+            color: var(--ballet-taupe);
+            font-style: italic;
+            padding: 0.3rem 0.5rem;
+            margin: 0.2rem 0 0 0;
+            background: rgba(201,169,110,0.05);
+            border-left: 2px solid var(--ballet-rose);
+            border-radius: 0 0.3rem 0.3rem 0;
+            word-break: break-word;
+        }
+        .item-actions {
+            display: flex;
+            gap: 0.2rem;
+            flex-shrink: 0;
+        }
+        .item-btn {
+            width: 28px; height: 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            border-radius: 0.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            opacity: 0.5;
+        }
+        .item-btn:hover, .item-btn:active { opacity: 1; }
+        .item-btn-edit { color: var(--ballet-gold); }
+        .item-btn-delete { color: var(--ballet-danger); }
+
+        .empty-state {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            color: var(--ballet-taupe);
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+        .empty-icon { font-size: 1.5rem; margin-bottom: 0.3rem; opacity: 0.5; }
+
+        /* ── FAB ── */
         .fab {
-            position: fixed; bottom: 2rem; right: 1.5rem; width: 60px; height: 60px; border-radius: 50%;
-            background: linear-gradient(135deg, #F4A0D8 0%, #FFB366 100%); color: white; border: none;
-            font-size: 1.8rem; cursor: pointer; box-shadow: 0 4px 16px rgba(244, 160, 216, 0.4);
-            display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 50;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.2rem;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--ballet-burgundy), #6B2D3A);
+            color: white;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(139,58,74,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 50;
         }
-        .fab:active { transform: scale(0.9); box-shadow: 0 2px 8px rgba(244, 160, 216, 0.3); }
+        .fab:active { transform: scale(0.92); }
+
+        /* ── MODALS ── */
         .modal {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); z-index: 1000; padding: 1rem; overflow-y: auto; -webkit-overflow-scrolling: touch;
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(45,42,42,0.5);
+            backdrop-filter: blur(2px);
+            z-index: 1000;
+            padding: 1rem;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         .modal.active { display: flex; align-items: flex-end; }
         .modal-content {
-            background: var(--bg-card); border-radius: 1.2rem 1.2rem 0 0; padding: 1.5rem;
-            width: 100%; animation: slideUp 0.3s ease; max-height: 90vh; overflow-y: auto;
+            background: var(--ballet-white);
+            border-radius: 1rem 1rem 0 0;
+            padding: 1.5rem;
+            width: 100%;
+            animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-top: 2px solid var(--ballet-gold);
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-header { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; justify-content: space-between; }
-        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+        .modal-header {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--ballet-burgundy);
+        }
+        .close-btn {
+            background: none; border: none;
+            font-size: 1.2rem; cursor: pointer;
+            color: var(--ballet-taupe);
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .close-btn:active { background: #F5EDE8; }
+
         .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--ballet-taupe);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.3rem;
+        }
         input, select, textarea {
-            width: 100%; padding: 0.7rem; border: 1px solid #E0D6CF; border-radius: 0.6rem;
-            font-size: 0.95rem; font-family: inherit; background: #FAFAFA; color: var(--text-main);
+            width: 100%;
+            padding: 0.7rem 0.8rem;
+            border: 1px solid var(--ballet-border);
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            background: #FDF8F5;
+            color: var(--ballet-charcoal);
+            transition: all 0.2s;
         }
-        textarea { resize: vertical; min-height: 80px; }
-        input:focus, select:focus, textarea:focus { outline: none; border-color: #5B8DD9; background: white; box-shadow: 0 0 0 3px rgba(91, 141, 217, 0.1); }
+        textarea { resize: vertical; min-height: 70px; }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--ballet-gold);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(201,169,110,0.1);
+        }
+
         .btn {
-            padding: 0.9rem; border: none; border-radius: 0.6rem; font-size: 0.95rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; width: 100%;
-            background: linear-gradient(135deg, #5B8DD9 0%, #6B9FE8 100%); color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
         }
-        .btn:active { transform: scale(0.98); }
-        .btn-secondary { background: #F4F4F4; color: #5B8DD9; border: 1px solid #E0D6CF; margin-top: 0.5rem; }
-        .button-group { display: flex; gap: 0.8rem; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--ballet-burgundy), #6B2D3A);
+            color: white;
+        }
+        .btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+        .btn-secondary {
+            background: #F5EDE8;
+            color: var(--ballet-burgundy);
+            border: 1px solid var(--ballet-border);
+            margin-top: 0.5rem;
+        }
+        .button-group { display: flex; gap: 0.6rem; }
         .button-group .btn { flex: 1; }
+
         .loading-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.8);
-            z-index: 2000; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #5B8DD9;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(253,248,245,0.85);
+            z-index: 2000;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem; color: var(--ballet-burgundy);
+            letter-spacing: 1px;
         }
         .loading-overlay.hidden { display: none; }
+
         @media (max-width: 480px) {
-            .container { padding: 0.8rem; padding-bottom: 2rem; }
+            .container { padding: 0.8rem; padding-bottom: 5rem; }
             header { padding: 1rem; }
             h1 { font-size: 1.3rem; }
         }
@@ -140,18 +491,18 @@
 </head>
 <body>
     <header>
-        <h1>🏃 Lyon J'arrive</h1>
-        <div class="header-meta">Gestion complète de l'emménagement • Internat Lyon</div>
+        <h1>Lyon J'arrive</h1>
+        <div class="header-subtitle">Gestion de l'emménagement · Internat Lyon</div>
     </header>
 
     <div class="container">
         <div class="dashboard">
             <div class="stat-box">
-                <div class="stat-label">Articles À acheter</div>
+                <div class="stat-label">À acheter</div>
                 <div class="stat-value" id="countTodo">0</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Articles Achetés</div>
+                <div class="stat-label">Achetés</div>
                 <div class="stat-value" id="countDone">0</div>
             </div>
             <div class="stat-box">
@@ -159,14 +510,14 @@
                 <div class="stat-value" id="totalSpent">0 €</div>
             </div>
             <div class="stat-box">
-                <div class="stat-label">Budget Total</div>
+                <div class="stat-label">Budget</div>
                 <div class="stat-value" id="totalBudget">0 €</div>
             </div>
         </div>
         <div class="categories-list" id="categoriesContainer"></div>
     </div>
 
-    <button class="fab" onclick="openModal('addModal')">➕</button>
+    <button class="fab" onclick="openModal('addModal')">+</button>
 
     <!-- ADD MODAL -->
     <div class="modal" id="addModal">
@@ -176,16 +527,16 @@
                 <button class="close-btn" onclick="closeModal('addModal')">✕</button>
             </div>
             <div class="form-group">
-                <label>Article *</label>
-                <input type="text" id="newItemName" placeholder="Ex: Oreiller">
+                <label>Article</label>
+                <input type="text" id="newItemName" placeholder="Oreiller, lampe...">
             </div>
             <div class="form-group">
-                <label>Catégorie *</label>
+                <label>Catégorie</label>
                 <select id="newItemCategory"></select>
             </div>
             <div class="form-group">
-                <label>Ou créer une nouvelle</label>
-                <input type="text" id="newItemNewCategory" placeholder="Ex: 🎓 Études">
+                <label>Nouvelle catégorie</label>
+                <input type="text" id="newItemNewCategory" placeholder="🎓 Études">
             </div>
             <div class="form-group">
                 <label>Coût estimé (€)</label>
@@ -193,10 +544,10 @@
             </div>
             <div class="form-group">
                 <label>Commentaire</label>
-                <textarea id="newItemComment" placeholder="Ex: Vérifier taille, promo Gifi..."></textarea>
+                <textarea id="newItemComment" placeholder="Taille, promo, remarque..."></textarea>
             </div>
             <div class="button-group">
-                <button class="btn" onclick="addNewItem()">Ajouter</button>
+                <button class="btn btn-primary" onclick="addNewItem()">Ajouter</button>
                 <button class="btn btn-secondary" onclick="closeModal('addModal')">Annuler</button>
             </div>
         </div>
@@ -206,12 +557,12 @@
     <div class="modal" id="editModal">
         <div class="modal-content">
             <div class="modal-header">
-                <span>Modifier l'article</span>
+                <span>Modifier</span>
                 <button class="close-btn" onclick="closeModal('editModal')">✕</button>
             </div>
             <div class="form-group">
-                <label>Article *</label>
-                <input type="text" id="editItemName" placeholder="Ex: Oreiller">
+                <label>Article</label>
+                <input type="text" id="editItemName">
             </div>
             <div class="form-group">
                 <label>Catégorie</label>
@@ -219,20 +570,20 @@
             </div>
             <div class="form-group">
                 <label>Coût (€)</label>
-                <input type="number" id="editItemCost" step="0.01" min="0" placeholder="0.00">
+                <input type="number" id="editItemCost" step="0.01" min="0">
             </div>
             <div class="form-group">
                 <label>Commentaire</label>
-                <textarea id="editItemComment" placeholder="Ex: Vérifier taille, promo Gifi..."></textarea>
+                <textarea id="editItemComment"></textarea>
             </div>
             <div class="button-group">
-                <button class="btn" onclick="saveEditItem()">Enregistrer</button>
+                <button class="btn btn-primary" onclick="saveEditItem()">Enregistrer</button>
                 <button class="btn btn-secondary" onclick="closeModal('editModal')">Annuler</button>
             </div>
         </div>
     </div>
 
-    <div class="loading-overlay hidden" id="loadingOverlay">Chargement...</div>
+    <div class="loading-overlay hidden" id="loadingOverlay">Chargement…</div>
 
     <script>
         const API = '/api';
@@ -253,24 +604,24 @@
                 const err = await res.json().catch(() => ({ error: res.statusText }));
                 throw new Error(err.error || 'API error');
             }
-            return res.json();
+            const text = await res.text();
+            return text ? JSON.parse(text) : null;
         }
 
         async function initApp() {
             showLoading();
             try {
                 const categories = await apiFetch('/categories');
-                if (categories.length === 0) {
-                    // First time — seed with initial data
+                if (!categories || categories.length === 0) {
                     await seedInitialData();
                     const fresh = await apiFetch('/categories');
-                    buildAppData(fresh);
+                    buildAppData(fresh || []);
                 } else {
                     buildAppData(categories);
                 }
             } catch (err) {
                 console.error('Init error:', err);
-                alert('Erreur de connexion à la base de données. Veuillez réessayer.');
+                alert('Erreur de connexion. Veuillez réessayer.');
             }
             hideLoading();
             render();
@@ -397,6 +748,7 @@
                 item.completed = newCompleted;
                 render();
             } catch (err) {
+                console.error('Toggle error:', err);
                 alert('Erreur: ' + err.message);
             }
         }
@@ -408,6 +760,7 @@
                 appData[catId].items = appData[catId].items.filter(i => i.id !== itemId);
                 render();
             } catch (err) {
+                console.error('Delete error:', err);
                 alert('Erreur: ' + err.message);
             }
         }
@@ -437,12 +790,10 @@
                     method: 'PUT',
                     body: JSON.stringify({ name: newName, cost: newCost, comment: newComment, category_id: parseInt(newCatId) })
                 });
-                // If category changed, move the item
                 if (newCatId !== editingCategoryId) {
                     const movedItem = appData[editingCategoryId].items.find(i => i.id === editingItemId);
                     appData[editingCategoryId].items = appData[editingCategoryId].items.filter(i => i.id !== editingItemId);
                     if (!appData[newCatId]) {
-                        // Need to fetch the new category
                         const cats = await apiFetch('/categories');
                         buildAppData(cats);
                     } else {
@@ -459,6 +810,7 @@
                 closeModal('editModal');
                 render();
             } catch (err) {
+                console.error('Edit error:', err);
                 alert('Erreur: ' + err.message);
             }
         }
@@ -467,9 +819,8 @@
             const options = Object.entries(appData).map(([id, cat]) =>
                 `<option value="${id}">${cat.name}</option>`
             ).join('');
-
             document.getElementById('newItemCategory').innerHTML =
-                '<option value="">-- Sélectionner une catégorie --</option>' + options;
+                '<option value="">— Catégorie —</option>' + options;
             document.getElementById('editItemCategory').innerHTML = options;
         }
 
@@ -480,12 +831,11 @@
             const cost = parseFloat(document.getElementById('newItemCost').value) || 0;
             const comment = document.getElementById('newItemComment').value.trim();
 
-            if (!name) { alert('Veuillez entrer un nom d\'article'); return; }
+            if (!name) { alert("Nom de l'article requis"); return; }
 
             let targetCatId = catId;
 
             try {
-                // Create new category if needed
                 if (newCatName && !catId) {
                     const newCat = await apiFetch('/categories', {
                         method: 'POST',
@@ -496,7 +846,7 @@
                     expandedCategories[targetCatId] = true;
                 }
 
-                if (!targetCatId) { alert('Veuillez sélectionner ou créer une catégorie'); return; }
+                if (!targetCatId) { alert('Sélectionnez ou créez une catégorie'); return; }
 
                 const itemId = genId();
                 await apiFetch('/items', {
@@ -516,6 +866,7 @@
                 updateCategorySelect();
                 render();
             } catch (err) {
+                console.error('Add error:', err);
                 alert('Erreur: ' + err.message);
             }
         }
@@ -542,49 +893,50 @@
                             <div class="category-title">${catData.name}</div>
                             <div class="category-stats-header">
                                 <span class="stat-chip">${completed}/${total}</span>
-                                <span class="stat-chip success">${itemsCost.toFixed(2)}€</span>
+                                <span class="stat-chip success">${itemsCost.toFixed(0)}€</span>
                             </div>
                         </div>
                         <div class="progress-section">
                             <div class="progress-label">
-                                <span>Progression articles</span><span>${percent}%</span>
+                                <span>Progression</span><span>${percent}%</span>
                             </div>
                             <div class="progress-bar-container">
                                 <div class="progress-fill" style="width: ${percent}%"></div>
                             </div>
-                            <div class="progress-label" style="margin-top: 1rem;">
-                                <span>Budget dépensé</span><span>${spent.toFixed(2)}€ / ${budget}€</span>
+                            <div class="progress-label" style="margin-top: 0.6rem;">
+                                <span>Budget</span><span>${spent.toFixed(0)}€ / ${budget}€</span>
                             </div>
                             <div class="budget-bar-container">
                                 <div class="budget-spent" style="width: ${budgetPercent}%"></div>
                             </div>
                             <div class="budget-label">
-                                <span>${(budget - spent).toFixed(2)}€ restant</span>
-                                <span style="color: ${budgetPercent > 100 ? 'var(--danger)' : '#5B8DD9'}">${budgetPercent}%</span>
+                                <span>${(budget - spent).toFixed(0)}€ restant</span>
+                                <span style="color: ${budgetPercent > 100 ? 'var(--ballet-danger)' : 'var(--ballet-taupe)'}">${budgetPercent}%</span>
                             </div>
                         </div>
                         <div class="items-container">
                             <div class="items-content">
                                 ${items.length === 0 ? `
                                     <div class="empty-state">
-                                        <div class="empty-icon">📭</div><div>Aucun article</div>
+                                        <div class="empty-icon">—</div>
+                                        <div>Aucun article</div>
                                     </div>
                                 ` : items.map(item => `
-                                    <div class="item ${item.completed ? 'completed' : ''}">
-                                        <input type="checkbox" class="item-checkbox"
-                                               ${item.completed ? 'checked' : ''}
-                                               onchange="toggleItem('${item.id}', '${catId}')">
-                                        <div class="item-info" style="flex: 1;">
-                                            <div class="item-name ${item.completed ? 'completed' : ''}">${item.name}</div>
-                                            <div class="item-meta">
-                                                <span class="item-tag">${item.cost.toFixed(2)}€</span>
+                                    <div>
+                                        <div class="item ${item.completed ? 'completed' : ''}">
+                                            <input type="checkbox" class="item-checkbox"
+                                                   ${item.completed ? 'checked' : ''}
+                                                   onchange="toggleItem('${item.id}', '${catId}')">
+                                            <div class="item-info">
+                                                <span class="item-name ${item.completed ? 'completed' : ''}">${item.name}</span>
+                                                <span class="item-cost">${item.cost.toFixed(2)}€</span>
                                             </div>
-                                            ${item.comment ? `<div class="item-comment">💬 ${item.comment}</div>` : ''}
                                             <div class="item-actions">
-                                                <button class="item-btn item-btn-edit" onclick="editItem('${item.id}', '${catId}')" title="Modifier">✏️</button>
-                                                <button class="item-btn item-btn-delete" onclick="deleteItem('${item.id}', '${catId}')" title="Supprimer">🗑️</button>
+                                                <button class="item-btn item-btn-edit" onclick="editItem('${item.id}', '${catId}')" title="Modifier">✎</button>
+                                                <button class="item-btn item-btn-delete" onclick="deleteItem('${item.id}', '${catId}')" title="Supprimer">✕</button>
                                             </div>
                                         </div>
+                                        ${item.comment ? `<div class="item-comment">${item.comment}</div>` : ''}
                                     </div>
                                 `).join('')}
                             </div>
@@ -608,7 +960,7 @@
             });
             document.getElementById('countTodo').textContent = totalTodo - totalDone;
             document.getElementById('countDone').textContent = totalDone;
-            document.getElementById('totalSpent').textContent = totalSpent.toFixed(2) + ' €';
+            document.getElementById('totalSpent').textContent = totalSpent.toFixed(0) + ' €';
             document.getElementById('totalBudget').textContent = totalBudget + ' €';
         }
 
